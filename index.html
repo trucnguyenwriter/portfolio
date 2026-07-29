@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modals 2 - Visual Grammar & Active Recall</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FCFAF7',
+                            100: '#F7F3EC',
+                            200: '#EFE7DB',
+                            300: '#E2D5C3',
+                            400: '#C8B69E',
+                        },
+                        amberSoft: '#FFF7ED',
+                        sage: {
+                            50: '#F0FDF4',
+                            100: '#DCFCE7',
+                            600: '#16A34A',
+                            700: '#15803D',
+                        },
+                        terracotta: {
+                            500: '#E05A47',
+                            600: '#C84332',
+                        },
+                        plum: '#6B46C1',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom visual learner styling */
+        body {
+            background-color: #F7F4EF;
+            color: #2D3748;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Soft elevation shadows */
+        .card-cream {
+            background-color: #FFFFFF;
+            border: 1px solid #EAE3D9;
+            box-shadow: 0 4px 20px -2px rgba(100, 80, 60, 0.05);
+        }
+
+        /* Interactive Flip Card */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Dynamic focus glow */
+        .focus-ring {
+            transition: all 0.2s ease-in-out;
+        }
+        .focus-ring:focus-within {
+            border-color: #D97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1ECE4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4C7B5;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B8A690;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-[#F7F4EF]/90 backdrop-blur-md border-b border-[#E5DEC3]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand / Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-display text-xl font-bold shadow-sm">
+                        M2
+                    </div>
+                    <div>
+                        <h1 class="font-display text-xl font-extrabold text-amber-950 tracking-tight">Modals 2</h1>
+                        <p class="text-xs text-amber-800/70 font-medium">Visual Grammar & Active Recall Hub</p>
+                    </div>
+                </div>
+
+                <!-- Main Navigation Tabs -->
+                <nav class="hidden md:flex items-center gap-1 bg-[#ECE5D8] p-1.5 rounded-xl border border-[#DFD5C3]">
+                    <button id="nav-learn-btn" onclick="switchTab('learn')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 bg-white text-amber-900 shadow-sm">
+                        <i class="fa-solid fa-diagram-project text-amber-600"></i>
+                        Visual Map & Rules
+                    </button>
+                    <button id="nav-practice-btn" onclick="switchTab('practice')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-stone-600 hover:text-amber-900 hover:bg-white/50">
+                        <i class="fa-solid fa-brain text-amber-600"></i>
+                        Active Recall Hub
+                    </button>
+                    <button id="nav-notes-btn" onclick="switchTab('notes')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-stone-600 hover:text-amber-900 hover:bg-white/50">
+                        <i class="fa-solid fa-pen-to-square text-amber-600"></i>
+                        My Study Notes
+                    </button>
+                </nav>
+
+                <!-- Study Stats Pill -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-100/80 text-amber-900 text-xs px-3 py-1.5 rounded-full border border-amber-200/60 font-semibold flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="recall-score">0 / 0 Mastered</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Row -->
+        <div class="md:hidden flex border-t border-[#E5DEC3] bg-[#F0EA9]">
+            <button onclick="switchTab('learn')" class="flex-1 py-2.5 text-xs font-bold text-center border-b-2 border-amber-600 text-amber-900">
+                <i class="fa-solid fa-diagram-project block mb-0.5"></i> Learn
+            </button>
+            <button onclick="switchTab('practice')" class="flex-1 py-2.5 text-xs font-bold text-center text-stone-600 hover:text-amber-900">
+                <i class="fa-solid fa-brain block mb-0.5"></i> Practice
+            </button>
+            <button onclick="switchTab('notes')" class="flex-1 py-2.5 text-xs font-bold text-center text-stone-600 hover:text-amber-900">
+                <i class="fa-solid fa-pen-to-square block mb-0.5"></i> Notes
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================================================= -->
+        <!-- TAB 1: VISUAL MAP & GRAMMAR LESSONS                                      -->
+        <!-- ========================================================================= -->
+        <section id="tab-learn" class="tab-content space-y-10">
+            
+            <!-- Hero / Visual Overview Banner -->
+            <div class="bg-gradient-to-r from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFE3] rounded-3xl p-6 sm:p-8 border border-[#E8DFC8] shadow-sm relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wider mb-3 border border-amber-200">
+                        Visual Native Logic Map
+                    </span>
+                    <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-stone-800 mb-2">
+                        Grammar B: Expressions of Obligation, Necessity & Advice
+                    </h2>
+                    <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                        Native speakers choose modal verbs based on <strong>Internal drive</strong> vs. <strong>External authority</strong>, <strong>Time frame</strong>, and whether an action <strong>actually happened</strong> in the past.
+                    </p>
+
+                    <!-- Quick visual tags -->
+                    <div class="flex flex-wrap gap-2 text-xs font-medium">
+                        <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg border border-blue-200"><i class="fa-solid fa-user me-1"></i> Internal Motivation</span>
+                        <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-200"><i class="fa-solid fa-building me-1"></i> External Rules & Laws</span>
+                        <span class="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg border border-purple-200"><i class="fa-solid fa-clock-rotate-left me-1"></i> Past Execution Context</span>
+                        <span class="bg-rose-50 text-rose-700 px-3 py-1 rounded-lg border border-rose-200"><i class="fa-solid fa-ban me-1"></i> Strict Prohibition</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 1: Obligation and Necessity -->
+            <div class="card-cream rounded-2xl p-6 sm:p-8 relative transition-all hover:shadow-md">
+                
+                <!-- Section Header -->
+                <div class="flex items-start justify-between border-b border-amber-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold font-display text-lg">1</span>
+                        <div>
+                            <span class="text-xs uppercase font-bold tracking-wider text-amber-700">English Category Keyword</span>
+                            <h3 class="font-display text-xl font-bold text-stone-900">Obligation and Necessity</h3>
+                        </div>
+                    </div>
+                    <span class="bg-amber-50 text-amber-800 text-xs px-3 py-1 rounded-full border border-amber-200 font-semibold hidden sm:inline-block">
+                        Must / Have to / Have got to / Need to
+                    </span>
+                </div>
+
+                <!-- Intro Concept Box -->
+                <div class="bg-stone-50 rounded-xl p-4 mb-6 border border-stone-200 text-stone-700 text-sm leading-relaxed">
+                    <p class="font-medium text-stone-800 mb-1"><i class="fa-solid fa-lightbulb text-amber-500 me-2"></i>Core Definition:</p>
+                    We use expressions of obligation and necessity when there is a need to do something. This need can be <strong>internal</strong> (the speaker feels it is necessary) or <strong>external</strong> (rules or the situation make it necessary).
+                </div>
+
+                <!-- Core Verbs Grid -->
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="p-4 rounded-xl bg-amber-50/60 border border-amber-200/80">
+                        <div class="font-bold text-amber-900 text-base mb-1">must (mustn't)</div>
+                        <p class="text-xs text-stone-600 mb-2">Modal verb. Internal speaker feeling / strict law print.</p>
+                        <div class="text-xs bg-white p-2 rounded border border-amber-200/50 italic text-stone-700">
+                          "You <strong>mustn't</strong> dress too casually for work."
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-200/80">
+                        <div class="font-bold text-blue-900 text-base mb-1">have to</div>
+                        <p class="text-xs text-stone-600 mb-2">External obligation. Rules, laws, routines.</p>
+                        <div class="text-xs bg-white p-2 rounded border border-blue-200/50 italic text-stone-700">
+                          "You <strong>have to</strong> get a work permit before you go."
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200/80">
+                        <div class="font-bold text-emerald-900 text-base mb-1">have got to</div>
+                        <p class="text-xs text-stone-600 mb-2">Informal spoken English for immediate external need.</p>
+                        <div class="text-xs bg-white p-2 rounded border border-emerald-200/50 italic text-stone-700">
+                          "I've <strong>got to</strong> find somewhere to live quite quickly."
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-purple-50/60 border border-purple-200/80">
+                        <div class="font-bold text-purple-900 text-base mb-1">need to</div>
+                        <p class="text-xs text-stone-600 mb-2">Requirement / Necessity (practical need).</p>
+                        <div class="text-xs bg-white p-2 rounded border border-purple-200/50 italic text-stone-700">
+                          "You'll <strong>need to</strong> allow a bit of extra time to get over jet lag."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deep Native Logic Breakdown Cards -->
+                <div class="space-y-4 mb-8">
+                    <h4 class="font-display font-bold text-stone-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-microscope text-amber-600"></i> Native Logic & Structural Mechanics
+                    </h4>
+
+                    <!-- Rule 1: Form Invariance -->
+                    <div class="p-4 rounded-xl bg-white border border-stone-200 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                        <div class="space-y-1">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-stone-100 text-stone-700 border border-stone-200 uppercase">Invariant Form</span>
+                            <p class="text-sm font-semibold text-stone-800">Must is a modal verb and its form NEVER changes</p>
+                            <p class="text-xs text-stone-500">Native mind-set: Pure modals do not take '-s', '-ed', or '-ing'. They sit uninflected before the base verb.</p>
+                        </div>
+                        <div class="bg-stone-50 p-3 rounded-lg border border-stone-200 text-xs space-y-1 shrink-0">
+                            <p class="text-emerald-700 font-medium"><i class="fa-solid fa-check text-emerald-500 me-1"></i> He <strong>must</strong> try a bit harder.</p>
+                            <p class="text-rose-600 line-through opacity-75"><i class="fa-solid fa-xmark text-rose-500 me-1"></i> He musts try a bit harder.</p>
+                        </div>
+                    </div>
+
+                    <!-- Rule 2: Speaker vs Institutional Rule -->
+                    <div class="p-4 rounded-xl bg-white border border-stone-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200 uppercase">Internal Speaker vs. External Law</span>
+                            <span class="text-xs text-stone-500">Origin of Obligation</span>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4 text-xs">
+                            <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-200">
+                                <span class="font-bold text-amber-900 block mb-1">Speaker Authority (Internal) → MUST</span>
+                                <p class="text-stone-600 mb-2">We use <strong>must</strong> when the obligation comes from the speaker's personal desire or authority.</p>
+                                <p class="italic text-amber-950 font-medium">"You <strong>must</strong> invite me to visit you." <span class="text-stone-500 font-normal">(the speaker wants this)</span></p>
+                            </div>
+                            <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-200">
+                                <span class="font-bold text-blue-900 block mb-1">Institutional Rule / Law (External) → HAVE TO / NEED TO</span>
+                                <p class="text-stone-600 mb-2">When there is an institutional rule, law, or external necessity, <strong>have to</strong> or <strong>need to</strong> are more common than <strong>must</strong>.</p>
+                                <p class="italic text-blue-950 font-medium">"You <strong>have to</strong> get a work permit before you go." <span class="text-stone-500 font-normal">(this is an official rule)</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 3: Register & Written Signs -->
+                    <div class="p-4 rounded-xl bg-white border border-stone-200 grid sm:grid-cols-2 gap-4 text-xs">
+                        <div class="space-y-1">
+                            <span class="font-bold text-stone-800 block">Spoken vs. Written Register</span>
+                            <p class="text-stone-600"><strong>Have to</strong> is more common in spoken English than <i>must</i>, but in written English either is used.</p>
+                            <p class="text-stone-600 pt-1"><strong>Have got to</strong> is more common in spoken English than written English:</p>
+                            <p class="italic text-stone-800 font-medium bg-stone-50 p-2 rounded border border-stone-200">"I've <strong>got to</strong> find somewhere to live quite quickly."</p>
+                        </div>
+                        <div class="space-y-1 bg-stone-50 p-3 rounded-lg border border-stone-200">
+                            <span class="font-bold text-stone-800 block text-amber-800"><i class="fa-solid fa-scroll me-1"></i> Signs, Notices & Printed Information</span>
+                            <p class="text-stone-600"><strong>Must</strong> is usually chosen on public signs, official notices, and printed instructions because it sounds objective and absolute:</p>
+                            <p class="italic text-stone-900 font-medium mt-1">"All employees <strong>must</strong> hold a valid work permit."</p>
+                        </div>
+                    </div>
+
+                    <!-- Rule 4: Tenses Breakdown (Present, Past, Future) -->
+                    <div class="p-4 rounded-xl bg-amber-50/30 border border-amber-200/80 space-y-3">
+                        <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900 uppercase">Tense Shifts (Past & Future Obligation)</span>
+                        <p class="text-xs text-stone-600">
+                            To talk about obligation and necessity in the present, we can use <strong>must(n't)</strong>, <strong>have to</strong>, <strong>have got to</strong>, or <strong>need to</strong>.
+                            However, <strong>must</strong> lacks past or future tenses! We MUST switch to <strong>have to</strong> or <strong>need to</strong> for past & future:
+                        </p>
+                        <div class="grid sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-1">
+                                <span class="font-bold text-amber-800">Future Obligation</span>
+                                <p class="italic font-medium text-stone-800">"You <strong>will have to</strong> learn some Cantonese."</p>
+                                <p class="text-rose-600 line-through text-[11px]"><i class="fa-solid fa-xmark"></i> You will must learn</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-amber-200 space-y-1">
+                                <span class="font-bold text-amber-800">Past Obligation</span>
+                                <p class="italic font-medium text-stone-800">"He <strong>had to</strong> get up really early to catch the ferry to work."</p>
+                                <p class="text-rose-600 line-through text-[11px]"><i class="fa-solid fa-xmark"></i> He must got up early</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 5: Warning on Questions -->
+                    <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs flex items-start gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg shrink-0 mt-0.5"></i>
+                        <div class="space-y-1">
+                            <span class="font-bold text-rose-900">Grammar Warning: Question Form Constraint</span>
+                            <p class="text-rose-800">We do <strong>not</strong> usually make questions with <strong>must</strong> and <strong>ought to</strong>. Use <strong>need to</strong> or <strong>have to</strong> instead!</p>
+                            <div class="mt-2 font-medium">
+                                <span class="text-emerald-800"><i class="fa-solid fa-check"></i> "What sort of things <strong>do you need to</strong> know?"</span>
+                                <span class="text-rose-700 line-through block sm:inline sm:ms-3"><i class="fa-solid fa-xmark"></i> What sort of things must you / ought you to know?</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Section Interactive Note Box -->
+                <div class="bg-amber-50/40 rounded-xl p-4 border border-amber-200/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="note-sec-1" class="text-xs font-bold uppercase text-amber-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen"></i> Personal Study Notes — Section 1: Obligation & Necessity
+                        </label>
+                        <span id="save-status-1" class="text-[11px] text-stone-400 font-medium">Auto-saved</span>
+                    </div>
+                    <textarea id="note-sec-1" oninput="saveNote('sec-1')" placeholder="Write your own custom notes, mnemonics, or personal real-life sentences here..." class="w-full text-xs p-3 rounded-lg border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white min-h-[70px] text-stone-800"></textarea>
+                </div>
+
+            </div>
+
+            <!-- SECTION 2: No Obligation -->
+            <div class="card-cream rounded-2xl p-6 sm:p-8 relative transition-all hover:shadow-md">
+                
+                <!-- Section Header -->
+                <div class="flex items-start justify-between border-b border-purple-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold font-display text-lg">2</span>
+                        <div>
+                            <span class="text-xs uppercase font-bold tracking-wider text-purple-700">English Category Keyword</span>
+                            <h3 class="font-display text-xl font-bold text-stone-900">No Obligation</h3>
+                        </div>
+                    </div>
+                    <span class="bg-purple-50 text-purple-800 text-xs px-3 py-1 rounded-full border border-purple-200 font-semibold hidden sm:inline-block">
+                        not have to / not need to / needn't
+                    </span>
+                </div>
+
+                <!-- Intro Definition Box -->
+                <div class="bg-stone-50 rounded-xl p-4 mb-6 border border-stone-200 text-stone-700 text-sm leading-relaxed">
+                    <p class="font-medium text-stone-800 mb-1"><i class="fa-solid fa-lightbulb text-purple-500 me-2"></i>Core Concept:</p>
+                    We use <strong>not have to</strong>, <strong>not need to</strong>, and <strong>needn't</strong> to suggest that there is <strong>no obligation or necessity</strong> to do something (it is optional / unnecessary).
+                    <p class="mt-2 italic text-purple-900 text-xs font-semibold bg-purple-50 p-2 rounded border border-purple-100">
+                        "You <strong>needn't</strong> buy lots of guide books before you go." (= it is not necessary to buy guide books before you go)
+                    </p>
+                </div>
+
+                <!-- Critical Native Contrast Box: MUSTN'T vs DON'T HAVE TO -->
+                <div class="p-5 rounded-2xl bg-amber-50/80 border-2 border-amber-300 mb-8 space-y-4">
+                    <div class="flex items-center gap-2 text-amber-900 font-display font-bold text-base">
+                        <i class="fa-solid fa-arrows-split-up-and-left text-amber-600 text-lg"></i>
+                        <span>CRITICAL NATIVE CONTRAST: Prohibition vs. No Necessity</span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Don't have to -->
+                        <div class="bg-white p-4 rounded-xl border border-amber-200 space-y-2">
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md uppercase">Option Available (No Necessity)</span>
+                            <p class="text-sm font-bold text-stone-800">don't have to / don't need to / needn't</p>
+                            <p class="text-xs text-stone-600">Meaning: You are free to choose. Doing it is NOT necessary, but you CAN if you want.</p>
+                            <p class="text-xs italic bg-emerald-50 text-emerald-950 p-2.5 rounded-lg border border-emerald-200 font-medium">
+                                "You <strong>don't have to</strong> wait for ages." <br>
+                                <span class="text-stone-500 text-[11px] font-normal font-sans">(= it is not necessary to wait, but you can if you choose to)</span>
+                            </p>
+                        </div>
+
+                        <!-- Mustn't -->
+                        <div class="bg-white p-4 rounded-xl border border-rose-200 space-y-2">
+                            <span class="px-2.5 py-1 bg-rose-100 text-rose-800 text-xs font-bold rounded-md uppercase">FORBIDDEN (Prohibition)</span>
+                            <p class="text-sm font-bold text-stone-800">mustn't</p>
+                            <p class="text-xs text-stone-600">Meaning: You have ZERO choice. You are strictly forbidden/not allowed to do it!</p>
+                            <p class="text-xs italic bg-rose-50 text-rose-950 p-2.5 rounded-lg border border-rose-200 font-medium">
+                                "You <strong>mustn't</strong> wait here." <br>
+                                <span class="text-stone-500 text-[11px] font-normal font-sans">(= it is not allowed to wait here / strict prohibition!)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deep Native Logic: Past Lack of Obligation (The Golden Distinction) -->
+                <div class="space-y-4 mb-8">
+                    <h4 class="font-display font-bold text-stone-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-600"></i> Past Lack of Obligation: Action Execution Difference
+                    </h4>
+
+                    <div class="bg-white p-5 rounded-xl border border-stone-200 space-y-4">
+                        <p class="text-xs text-stone-600">
+                            To talk about lack of obligation in the past we can use: <strong>needn't have + past participle</strong>, <strong>didn't need to</strong>, or <strong>didn't have to</strong>.
+                        </p>
+                        <p class="text-xs italic text-stone-700 bg-stone-50 p-2.5 rounded border border-stone-200">
+                            Example: "We <strong>didn't have to</strong> worry about work permits when I was there." | "I <strong>needn't have bothered</strong> to get a work permit."
+                        </p>
+
+                        <!-- Visual Comparison Chart -->
+                        <div class="grid md:grid-cols-2 gap-4 pt-2">
+                            
+                            <!-- didn't need to -->
+                            <div class="bg-purple-50/50 p-4 rounded-xl border border-purple-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-extrabold text-purple-900 uppercase">didn't need to</span>
+                                    <span class="bg-stone-200 text-stone-800 text-[10px] px-2 py-0.5 rounded font-bold">Action NOT Done</span>
+                                </div>
+                                <p class="text-xs text-stone-700">The speaker knew it was unnecessary in advance, so <strong>they DID NOT perform the action</strong>.</p>
+                                <div class="bg-white p-3 rounded-lg border border-purple-200 text-xs italic font-medium text-stone-800">
+                                    "John picked me up from the station so I <strong>didn't need to get</strong> a taxi home."
+                                    <p class="text-purple-900 not-italic font-normal text-[11px] mt-1 pt-1 border-t border-purple-100">
+                                        ➔ Result: It wasn't necessary, so I <u>did not get</u> a taxi.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- needn't have + V3 -->
+                            <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-extrabold text-amber-900 uppercase">needn't have + V3</span>
+                                    <span class="bg-amber-200 text-amber-900 text-[10px] px-2 py-0.5 rounded font-bold">Action WAS Done (Wasted Effort)</span>
+                                </div>
+                                <p class="text-xs text-stone-700">The speaker <strong>DID perform the action</strong>, but later realized it was unnecessary.</p>
+                                <div class="bg-white p-3 rounded-lg border border-amber-200 text-xs italic font-medium text-stone-800">
+                                    "I <strong>needn't have got</strong> a taxi because John's flat wasn't far from the station."
+                                    <p class="text-amber-900 not-italic font-normal text-[11px] mt-1 pt-1 border-t border-amber-100">
+                                        ➔ Result: I <u>actually took</u> a taxi, but it was unnecessary!
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Future Lack of Obligation -->
+                    <div class="p-4 rounded-xl bg-white border border-stone-200 space-y-2 text-xs">
+                        <span class="font-bold text-stone-800 text-sm">Future Lack of Obligation</span>
+                        <p class="text-stone-600">To talk about the future we use <strong>not have to</strong> or <strong>not need to</strong>:</p>
+                        <div class="grid sm:grid-cols-2 gap-2 pt-1 font-medium italic text-stone-800">
+                            <div class="bg-stone-50 p-2.5 rounded border border-stone-200">"I hope I <strong>won't have to</strong> work late tonight."</div>
+                            <div class="bg-stone-50 p-2.5 rounded border border-stone-200">"He's <strong>not going to need to</strong> come to the meeting after all."</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Interactive Note Box -->
+                <div class="bg-purple-50/40 rounded-xl p-4 border border-purple-200/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="note-sec-2" class="text-xs font-bold uppercase text-purple-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen"></i> Personal Study Notes — Section 2: No Obligation
+                        </label>
+                        <span id="save-status-2" class="text-[11px] text-stone-400 font-medium">Auto-saved</span>
+                    </div>
+                    <textarea id="note-sec-2" oninput="saveNote('sec-2')" placeholder="Record your notes on didn't need to vs needn't have, or create your own examples..." class="w-full text-xs p-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white min-h-[70px] text-stone-800"></textarea>
+                </div>
+
+            </div>
+
+            <!-- SECTION 3: Suggestions and advice -->
+            <div class="card-cream rounded-2xl p-6 sm:p-8 relative transition-all hover:shadow-md">
+                
+                <!-- Section Header -->
+                <div class="flex items-start justify-between border-b border-emerald-100 pb-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold font-display text-lg">3</span>
+                        <div>
+                            <span class="text-xs uppercase font-bold tracking-wider text-emerald-700">English Category Keyword</span>
+                            <h3 class="font-display text-xl font-bold text-stone-900">Suggestions and Advice</h3>
+                        </div>
+                    </div>
+                    <span class="bg-emerald-50 text-emerald-800 text-xs px-3 py-1 rounded-full border border-emerald-200 font-semibold hidden sm:inline-block">
+                        should / ought to / must
+                    </span>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    
+                    <!-- Standard Advice -->
+                    <div class="bg-white p-5 rounded-xl border border-stone-200 space-y-3">
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-md uppercase">Standard Recommendation</span>
+                        <h4 class="font-bold text-stone-800 text-sm">should(n't) and ought (not) to</h4>
+                        <p class="text-xs text-stone-600">We can use modal verbs <strong>should(n't)</strong> and <strong>ought (not) to</strong> to make suggestions or give advice (= I think it is a good idea):</p>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-emerald-50/60 p-2.5 rounded border border-emerald-100 italic text-stone-800 font-medium">
+                                "You <strong>should</strong> try and use it whenever you can." <span class="text-stone-500 font-normal">(= I think it is a good idea)</span>
+                            </div>
+                            <div class="bg-emerald-50/60 p-2.5 rounded border border-emerald-100 italic text-stone-800 font-medium">
+                                "You <strong>ought to</strong> take lots of passport photos with you."
+                            </div>
+                            <div class="bg-emerald-50/60 p-2.5 rounded border border-emerald-100 italic text-stone-800 font-medium">
+                                "You <strong>shouldn't</strong> dress casually for work."
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strong Advice -->
+                    <div class="bg-white p-5 rounded-xl border border-stone-200 space-y-3">
+                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-md uppercase">Urgent / Enthusiastic Recommendation</span>
+                        <h4 class="font-bold text-stone-800 text-sm">must (Strong Advice)</h4>
+                        <p class="text-xs text-stone-600">We can use <strong>must</strong> to give <strong>strong advice</strong> or passionate recommendation:</p>
+
+                        <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 space-y-2">
+                            <p class="text-xs italic font-semibold text-amber-950">
+                                "You <strong>must</strong> phone me when you get there."
+                            </p>
+                            <p class="text-[11px] text-amber-800">
+                                Native nuance: It's not a military command, but an urgent, warm expression of personal care or strong endorsement!
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Section Interactive Note Box -->
+                <div class="bg-emerald-50/40 rounded-xl p-4 border border-emerald-200/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="note-sec-3" class="text-xs font-bold uppercase text-emerald-900 flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen"></i> Personal Study Notes — Section 3: Suggestions & Advice
+                        </label>
+                        <span id="save-status-3" class="text-[11px] text-stone-400 font-medium">Auto-saved</span>
+                    </div>
+                    <textarea id="note-sec-3" oninput="saveNote('sec-3')" placeholder="Notes on should vs ought to vs must..." class="w-full text-xs p-3 rounded-lg border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white min-h-[70px] text-stone-800"></textarea>
+                </div>
+
+            </div>
+
+            <!-- SECTION 4 & SECTION 5: Adverbs & Formal Written English -->
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- SECTION 4: Adverbs -->
+                <div class="card-cream rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 border-b border-blue-100 pb-4 mb-6">
+                            <span class="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold font-display text-lg">4</span>
+                            <div>
+                                <span class="text-xs uppercase font-bold tracking-wider text-blue-700">English Category Keyword</span>
+                                <h3 class="font-display text-xl font-bold text-stone-900">Adverbs</h3>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 text-xs mb-6">
+                            <!-- Rule A -->
+                            <div class="bg-white p-4 rounded-xl border border-stone-200 space-y-2">
+                                <span class="font-bold text-blue-900 block">Adverb Position AFTER Modal Verbs</span>
+                                <p class="text-stone-600">Adverbs like <i>also, always, never, sometimes, just</i> and <i>only</i> come <strong>AFTER modal verbs</strong>:</p>
+                                <div class="space-y-1.5 italic font-medium text-stone-800">
+                                    <div class="bg-blue-50/50 p-2 rounded border border-blue-100 font-sans">"You <strong>should always</strong> carry plenty of loose change."</div>
+                                    <div class="bg-blue-50/50 p-2 rounded border border-blue-100 font-sans">"You <strong>must never</strong> do that again."</div>
+                                </div>
+                            </div>
+
+                            <!-- Rule B -->
+                            <div class="bg-white p-4 rounded-xl border border-stone-200 space-y-2">
+                                <span class="font-bold text-blue-900 block">Adding Extra Emphasis: REALLY</span>
+                                <p class="text-stone-600">To add extra emphasis we can use <strong>really</strong> BEFORE the verb:</p>
+                                <div class="bg-amber-50/60 p-2.5 rounded border border-amber-200 italic font-semibold text-amber-950 font-sans">
+                                    "You <strong>really have to</strong> see it to believe it."
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Note Box -->
+                    <div class="bg-blue-50/40 rounded-xl p-4 border border-blue-200/60">
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="note-sec-4" class="text-xs font-bold uppercase text-blue-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen"></i> Notes — Section 4: Adverbs
+                            </label>
+                            <span id="save-status-4" class="text-[11px] text-stone-400 font-medium">Auto-saved</span>
+                        </div>
+                        <textarea id="note-sec-4" oninput="saveNote('sec-4')" placeholder="Notes on adverb word order with modals..." class="w-full text-xs p-3 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white min-h-[60px] text-stone-800"></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: Formal Written English -->
+                <div class="card-cream rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 border-b border-amber-100 pb-4 mb-6">
+                            <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold font-display text-lg">5</span>
+                            <div>
+                                <span class="text-xs uppercase font-bold tracking-wider text-amber-700">English Category Keyword</span>
+                                <h3 class="font-display text-xl font-bold text-stone-900">Formal Written English</h3>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 text-xs mb-6">
+                            <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 space-y-2">
+                                <p class="text-stone-700">
+                                    Verbs of obligation, necessity and suggestion are common in <strong>formal and academic writing</strong> when giving opinions and recommendations:
+                                </p>
+                                <div class="space-y-2 pt-2">
+                                    <div class="bg-white p-3 rounded-lg border border-stone-200 italic font-medium text-stone-800">
+                                        "Governments <strong>should</strong> take advice from the experts before making new laws."
+                                    </div>
+                                    <div class="bg-white p-3 rounded-lg border border-stone-200 italic font-medium text-stone-800">
+                                        "Companies <strong>need to</strong> consider cultural differences when engaging in business with overseas organisations."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Note Box -->
+                    <div class="bg-amber-50/40 rounded-xl p-4 border border-amber-200/60">
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="note-sec-5" class="text-xs font-bold uppercase text-amber-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-pen"></i> Notes — Section 5: Formal Academic Writing
+                            </label>
+                            <span id="save-status-5" class="text-[11px] text-stone-400 font-medium">Auto-saved</span>
+                        </div>
+                        <textarea id="note-sec-5" oninput="saveNote('sec-5')" placeholder="Notes on formal academic register..." class="w-full text-xs p-3 rounded-lg border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white min-h-[60px] text-stone-800"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================================= -->
+        <!-- TAB 2: ACTIVE RECALL PRACTICE HUB                                         -->
+        <!-- ========================================================================= -->
+        <section id="tab-practice" class="tab-content hidden space-y-8">
+            
+            <!-- Practice Sub-Mode Navigation Header -->
+            <div class="bg-white p-4 rounded-2xl border border-stone-200 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-display text-lg font-bold text-stone-800">Active Recall Training Ground</h2>
+                    <p class="text-xs text-stone-500">Test your recall of forms, native logic, tense switches, and adverb order.</p>
+                </div>
+
+                <div class="flex gap-2 text-xs font-semibold">
+                    <button onclick="switchPracticeMode('flashcards')" id="pmode-flashcards-btn" class="px-4 py-2 rounded-xl bg-amber-500 text-white shadow-sm transition">
+                        <i class="fa-solid fa-layer-group me-1"></i> Interactive Flashcards
+                    </button>
+                    <button onclick="switchPracticeMode('decision')" id="pmode-decision-btn" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">
+                        <i class="fa-solid fa-sitemap me-1"></i> Scenario Decision Tree
+                    </button>
+                    <button onclick="switchPracticeMode('quiz')" id="pmode-quiz-btn" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">
+                        <i class="fa-solid fa-list-check me-1"></i> Grammar Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUB-MODE 1: FLASHCARDS -->
+            <div id="practice-flashcards" class="space-y-6">
+                
+                <div class="text-center max-w-xl mx-auto space-y-2">
+                    <span class="text-xs uppercase tracking-wider font-extrabold text-amber-700">Flip & Recall</span>
+                    <p class="text-xs text-stone-600">Try to explain the native logic or complete the structure before clicking to flip the card.</p>
+                </div>
+
+                <!-- Flashcard View Container -->
+                <div class="max-w-xl mx-auto perspective-1000">
+                    <div id="flashcard" onclick="flipCard()" class="card-cream w-full min-h-[260px] rounded-3xl p-8 cursor-pointer relative transform-style-3d transition-transform duration-500 flex flex-col justify-between border-2 border-amber-200 shadow-md">
+                        
+                        <!-- Front View -->
+                        <div id="flashcard-front" class="space-y-4 text-center my-auto">
+                            <span id="fc-category" class="inline-block px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full">
+                                Category Tag
+                            </span>
+                            <p id="fc-prompt" class="font-display text-xl sm:text-2xl font-bold text-stone-800 leading-snug">
+                                Prompt text goes here...
+                            </p>
+                            <p class="text-xs text-amber-600 font-semibold"><i class="fa-solid fa-hand-pointer me-1"></i> Tap card to reveal native logic & answer</p>
+                        </div>
+
+                        <!-- Back View -->
+                        <div id="flashcard-back" class="rotate-y-180 backface-hidden absolute inset-0 p-8 rounded-3xl bg-amber-50/90 flex flex-col justify-between text-stone-800">
+                            <div>
+                                <span class="text-xs font-extrabold uppercase text-amber-800 block mb-2">Native Rationale & Correct Usage</span>
+                                <div id="fc-answer" class="text-sm sm:text-base font-semibold text-amber-950 mb-3 leading-relaxed">
+                                    Answer content...
+                                </div>
+                                <p id="fc-explanation" class="text-xs text-stone-600 leading-normal">
+                                    Detailed explanation...
+                                </p>
+                            </div>
+                            <span class="text-[11px] text-amber-700 font-medium text-center">Click again to flip back</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Row -->
+                <div class="flex items-center justify-center gap-4 max-w-xl mx-auto pt-2">
+                    <button onclick="prevCard()" class="px-4 py-2 rounded-xl bg-white border border-stone-200 text-stone-700 text-xs font-bold hover:bg-stone-50">
+                        <i class="fa-solid fa-chevron-left me-1"></i> Previous
+                    </button>
+                    <span id="card-counter" class="text-xs font-bold text-stone-500">1 / 8</span>
+                    <button onclick="nextCard()" class="px-4 py-2 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700 shadow-sm">
+                        Next Card <i class="fa-solid fa-chevron-right ms-1"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- SUB-MODE 2: SCENARIO DECISION TREE -->
+            <div id="practice-decision" class="hidden space-y-6">
+                <div class="card-cream p-6 sm:p-8 rounded-3xl max-w-3xl mx-auto space-y-6">
+                    <div class="border-b border-stone-200 pb-4">
+                        <span class="text-xs uppercase font-extrabold text-amber-700">Interactive Logic Flow</span>
+                        <h3 class="font-display text-xl font-bold text-stone-800">Modal Selection Decision Tree</h3>
+                        <p class="text-xs text-stone-500">Answer 3 quick questions to discover the exact modal verb required by native grammar logic!</p>
+                    </div>
+
+                    <!-- Step 1: Origin of Need -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-bold text-stone-700 uppercase">Step 1: Where does the necessity come from?</label>
+                        <div class="grid sm:grid-cols-3 gap-3">
+                            <button onclick="selectDecision('origin', 'internal', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                <span class="font-bold block text-stone-800">Internal Motivation</span>
+                                Speaker feels it is necessary
+                            </button>
+                            <button onclick="selectDecision('origin', 'external', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                <span class="font-bold block text-stone-800">External Authority</span>
+                                Institutional rule, law, or situation
+                            </button>
+                            <button onclick="selectDecision('origin', 'none', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                <span class="font-bold block text-stone-800">No Obligation</span>
+                                Free choice / Optional action
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Time Frame -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-bold text-stone-700 uppercase">Step 2: What is the time frame?</label>
+                        <div class="grid sm:grid-cols-3 gap-3">
+                            <button onclick="selectDecision('time', 'present', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                Present
+                            </button>
+                            <button onclick="selectDecision('time', 'past', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                Past
+                            </button>
+                            <button onclick="selectDecision('time', 'future', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                Future
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Execution Context (Only matters for Past No Obligation) -->
+                    <div id="dt-step-execution" class="space-y-3 opacity-50 pointer-events-none transition-all">
+                        <label class="block text-xs font-bold text-stone-700 uppercase">Step 3: In the past, was the action actually performed?</label>
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            <button onclick="selectDecision('action', 'done', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                <span class="font-bold block text-stone-800">YES (Action Executed)</span>
+                                Action was performed, but was unnecessary
+                            </button>
+                            <button onclick="selectDecision('action', 'not_done', this)" class="dt-btn p-3 rounded-xl border border-stone-200 text-left hover:border-amber-500 text-xs font-medium">
+                                <span class="font-bold block text-stone-800">NO (Action Avoided)</span>
+                                Action was NOT performed because unnecessary
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Box -->
+                    <div id="dt-result-box" class="bg-amber-50 p-5 rounded-2xl border border-amber-200 text-center space-y-2 hidden">
+                        <span class="text-xs font-bold uppercase text-amber-800">Recommended Native Modal</span>
+                        <div id="dt-result-title" class="font-display text-2xl font-extrabold text-amber-950">
+                            ---
+                        </div>
+                        <p id="dt-result-desc" class="text-xs text-stone-700 max-w-md mx-auto">
+                            ---
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-MODE 3: GRAMMAR QUIZ -->
+            <div id="practice-quiz" class="hidden space-y-6">
+                <div class="card-cream p-6 sm:p-8 rounded-3xl max-w-3xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+                        <div>
+                            <span class="text-xs uppercase font-extrabold text-amber-700">Active Recall Diagnostic</span>
+                            <h3 class="font-display text-xl font-bold text-stone-800">Comprehensive Grammar Quiz</h3>
+                        </div>
+                        <span id="quiz-progress-text" class="text-xs font-bold text-stone-500">Question 1 of 6</span>
+                    </div>
+
+                    <!-- Quiz Question Area -->
+                    <div id="quiz-container" class="space-y-6">
+                        <div class="space-y-2">
+                            <span id="quiz-category" class="px-2.5 py-1 bg-amber-100 text-amber-900 text-[11px] font-bold rounded-md uppercase">
+                                Category
+                            </span>
+                            <p id="quiz-question" class="font-display text-lg font-bold text-stone-800">
+                                Question text here...
+                            </p>
+                        </div>
+
+                        <!-- Options List -->
+                        <div id="quiz-options" class="space-y-3">
+                            <!-- Injected dynamically -->
+                        </div>
+
+                        <!-- Rationale Feedback -->
+                        <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs space-y-1">
+                            <!-- Feedback dynamically loaded -->
+                        </div>
+
+                        <!-- Quiz Nav -->
+                        <div class="flex justify-end pt-2">
+                            <button id="quiz-next-btn" onclick="nextQuestion()" class="hidden px-5 py-2.5 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700">
+                                Next Question <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================================= -->
+        <!-- TAB 3: MY STUDY NOTES OVERVIEW                                            -->
+        <!-- ========================================================================= -->
+        <section id="tab-notes" class="tab-content hidden space-y-8">
+            <div class="card-cream p-6 sm:p-8 rounded-3xl space-y-6">
+                <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+                    <div>
+                        <h2 class="font-display text-xl font-bold text-stone-800">Centralized Study Notes Overview</h2>
+                        <p class="text-xs text-stone-500">Review all your handwritten notes gathered across the grammar modules.</p>
+                    </div>
+                    <button onclick="exportNotes()" class="px-4 py-2 rounded-xl bg-amber-100 text-amber-900 text-xs font-bold hover:bg-amber-200 border border-amber-200">
+                        <i class="fa-solid fa-download me-1"></i> Export Notes
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <span class="text-xs font-bold text-amber-800 uppercase block">1. Obligation & Necessity</span>
+                        <div id="summary-sec-1" class="text-xs text-stone-700 italic min-h-[50px] bg-white p-3 rounded-xl border border-stone-200">
+                            No notes recorded yet.
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <span class="text-xs font-bold text-purple-800 uppercase block">2. No Obligation</span>
+                        <div id="summary-sec-2" class="text-xs text-stone-700 italic min-h-[50px] bg-white p-3 rounded-xl border border-stone-200">
+                            No notes recorded yet.
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <span class="text-xs font-bold text-emerald-800 uppercase block">3. Suggestions & Advice</span>
+                        <div id="summary-sec-3" class="text-xs text-stone-700 italic min-h-[50px] bg-white p-3 rounded-xl border border-stone-200">
+                            No notes recorded yet.
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
+                        <span class="text-xs font-bold text-blue-800 uppercase block">4. Adverbs</span>
+                        <div id="summary-sec-4" class="text-xs text-stone-700 italic min-h-[50px] bg-white p-3 rounded-xl border border-stone-200">
+                            No notes recorded yet.
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-2 md:col-span-2">
+                        <span class="text-xs font-bold text-stone-800 uppercase block">5. Formal Written English</span>
+                        <div id="summary-sec-5" class="text-xs text-stone-700 italic min-h-[50px] bg-white p-3 rounded-xl border border-stone-200">
+                            No notes recorded yet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Application Core -->
+    <script>
+        // Data Structures for Flashcards
+        const flashcards = [
+            {
+                category: "Obligation Origin",
+                prompt: "When do native speakers prefer 'MUST' over 'HAVE TO'?",
+                answer: "When obligation comes directly from the SPEAKER (Internal desire/command).",
+                explanation: "Example: 'You must invite me to visit you.' (speaker wants this). For institutional rules or laws, 'have to' is preferred."
+            },
+            {
+                category: "Past Tense Constraint",
+                prompt: "Can you say 'You will must learn Cantonese' or 'He must got up early'?",
+                answer: "NO! 'Must' has no future or past forms.",
+                explanation: "You MUST use 'have to' or 'need to' in past and future: 'You will have to learn...' and 'He had to get up early...'"
+            },
+            {
+                category: "Prohibition vs No Necessity",
+                prompt: "What is the key contrast between 'You mustn't wait' vs 'You don't have to wait'?",
+                answer: "'mustn't' = FORBIDDEN (No choice). 'don't have to' = OPTIONAL (No necessity).",
+                explanation: "'You mustn't wait here' means it is prohibited. 'You don't have to wait' means it is unnecessary, but allowed if you want."
+            },
+            {
+                category: "Past Lack of Obligation Execution",
+                prompt: "Difference: 'I didn't need to get a taxi' vs 'I needn't have got a taxi'?",
+                answer: "'didn't need to' = Taxi NOT taken. 'needn't have + V3' = Taxi WAS taken unnecessarily.",
+                explanation: "If you did the action and later realized it was unnecessary, use 'needn't have + V3'. If you avoided doing it because it wasn't necessary, use 'didn't need to'."
+            },
+            {
+                category: "Question Form Limitation",
+                prompt: "Do native speakers ask: 'What sort of things must you know?'",
+                answer: "No! We do not usually make questions with 'must' or 'ought to'.",
+                explanation: "Use 'need to' or 'have to' for questions instead: 'What sort of things do you need to know?'"
+            },
+            {
+                category: "Adverb Word Order",
+                prompt: "Where do adverbs like 'always', 'never' go relative to modals? What about 'really'?",
+                answer: "Adverbs go AFTER modal verbs. 'Really' goes BEFORE the verb.",
+                explanation: "'You should ALWAYS carry loose change.' / 'You must NEVER do that.' BUT 'You REALLY HAVE TO see it.'"
+            },
+            {
+                category: "Written & Official Signs",
+                prompt: "Which modal verb is dominant on public signs and printed notices?",
+                answer: "MUST",
+                explanation: "Example: 'All employees must hold a valid work permit.' Printed notices use 'must' to state absolute rules."
+            },
+            {
+                category: "Formal Academic Writing",
+                prompt: "How are modals used when giving academic/formal opinions?",
+                answer: "'Should' and 'Need to' are used to express policy recommendations.",
+                explanation: "Example: 'Governments should take advice...' and 'Companies need to consider cultural differences...'"
+            }
+        ];
+
+        // Quiz Question Deck
+        const quizQuestions = [
+            {
+                category: "Past Tense Shift",
+                question: "Select the correct sentence talking about past obligation:",
+                options: [
+                    "He must got up really early to catch the ferry.",
+                    "He had to get up really early to catch the ferry.",
+                    "He will must get up really early to catch the ferry.",
+                    "He ought got up really early to catch the ferry."
+                ],
+                correct: 1,
+                explanation: "'Must' does not have a past form. We must use 'had to' for past obligation!"
+            },
+            {
+                category: "Action Execution Contrast",
+                question: "John picked me up from the station, so I __________ get a taxi home.",
+                options: [
+                    "needn't have got",
+                    "didn't need to get",
+                    "mustn't get",
+                    "ought not to get"
+                ],
+                correct: 1,
+                explanation: "Since John picked me up, I did NOT get a taxi. Therefore, 'didn't need to get' is the correct form."
+            },
+            {
+                category: "Prohibition Choice",
+                question: "You __________ dress too casually for work. It's strictly against company policy.",
+                options: [
+                    "don't have to",
+                    "needn't",
+                    "mustn't",
+                    "haven't got to"
+                ],
+                correct: 2,
+                explanation: "'Mustn't' expresses strict prohibition (not allowed). 'Don't have to' would mean it's optional!"
+            },
+            {
+                category: "Adverb Placement",
+                question: "Which sentence has correct adverb word order?",
+                options: [
+                    "You always should carry plenty of loose change.",
+                    "You should carry always plenty of loose change.",
+                    "You should always carry plenty of loose change.",
+                    "You carry should always plenty of loose change."
+                ],
+                correct: 2,
+                explanation: "Adverbs like 'always', 'never', 'also' come AFTER modal verbs ('should always')."
+            },
+            {
+                category: "Emphasis Word Order",
+                question: "Which sentence correctly uses 'really' for extra emphasis?",
+                options: [
+                    "You have really to see it to believe it.",
+                    "You really have to see it to believe it.",
+                    "You have to see really it to believe it.",
+                    "You have to really see it to believe it."
+                ],
+                correct: 1,
+                explanation: "To add extra emphasis, 'really' comes BEFORE the verb ('really have to')."
+            },
+            {
+                category: "Question Form",
+                question: "Which question is natural and grammatically appropriate?",
+                options: [
+                    "What sort of things must you know?",
+                    "What sort of things ought you to know?",
+                    "What sort of things do you need to know?",
+                    "What sort of things must you to know?"
+                ],
+                correct: 2,
+                explanation: "We do not usually make questions with 'must' or 'ought to'. 'Do you need to' is the standard form."
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let isCardFlipped = false;
+        let currentQuizIndex = 0;
+        let userQuizAnswers = [];
+        let decisionState = { origin: null, time: null, action: null };
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Header tab styling
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-amber-900', 'shadow-sm');
+                btn.classList.add('text-stone-600');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}-btn`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-amber-900', 'shadow-sm');
+                activeBtn.classList.remove('text-stone-600');
+            }
+
+            if (tabId === 'notes') {
+                renderNotesSummary();
+            }
+        }
+
+        function saveNote(secId) {
+            const val = document.getElementById(`note-${secId}`).value;
+            localStorage.setItem(`modals2_note_${secId}`, val);
+            
+            const statusEl = document.getElementById(`save-status-${secId.replace('sec-', '')}`);
+            if (statusEl) {
+                statusEl.textContent = "Saved";
+                statusEl.classList.add('text-amber-600');
+                setTimeout(() => {
+                    statusEl.textContent = "Auto-saved";
+                    statusEl.classList.remove('text-amber-600');
+                }, 1500);
+            }
+        }
+
+        function loadNotes() {
+            ['sec-1', 'sec-2', 'sec-3', 'sec-4', 'sec-5'].forEach(secId => {
+                const saved = localStorage.getItem(`modals2_note_${secId}`);
+                if (saved) {
+                    const el = document.getElementById(`note-${secId}`);
+                    if (el) el.value = saved;
+                }
+            });
+        }
+
+        function renderNotesSummary() {
+            ['sec-1', 'sec-2', 'sec-3', 'sec-4', 'sec-5'].forEach(secId => {
+                const val = localStorage.getItem(`modals2_note_${secId}`);
+                const summaryEl = document.getElementById(`summary-${secId}`);
+                if (summaryEl) {
+                    if (val && val.trim() !== '') {
+                        summaryEl.textContent = val;
+                        summaryEl.classList.remove('italic', 'text-stone-400');
+                    } else {
+                        summaryEl.textContent = 'No notes recorded yet for this section.';
+                        summaryEl.classList.add('italic', 'text-stone-400');
+                    }
+                }
+            });
+        }
+
+        function exportNotes() {
+            let content = "=== MODALS 2 STUDY NOTES ===\n\n";
+            ['1. Obligation & Necessity', '2. No Obligation', '3. Suggestions & Advice', '4. Adverbs', '5. Formal Written English'].forEach((title, idx) => {
+                const secKey = `sec-${idx+1}`;
+                const val = localStorage.getItem(`modals2_note_${secKey}`) || "(No notes)";
+                content += `--- ${title} ---\n${val}\n\n`;
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Modals2_Study_Notes.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function renderCard() {
+            const cardData = flashcards[currentCardIndex];
+            document.getElementById('fc-category').textContent = cardData.category;
+            document.getElementById('fc-prompt').textContent = cardData.prompt;
+            document.getElementById('fc-answer').textContent = cardData.answer;
+            document.getElementById('fc-explanation').textContent = cardData.explanation;
+            document.getElementById('card-counter').textContent = `${currentCardIndex + 1} / ${flashcards.length}`;
+
+            // Reset flip
+            const cardEl = document.getElementById('flashcard');
+            cardEl.classList.remove('rotate-y-180');
+            isCardFlipped = false;
+        }
+
+        function flipCard() {
+            const cardEl = document.getElementById('flashcard');
+            isCardFlipped = !isCardFlipped;
+            if (isCardFlipped) {
+                cardEl.classList.add('rotate-y-180');
+            } else {
+                cardEl.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            renderCard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            renderCard();
+        }
+
+        function switchPracticeMode(mode) {
+            ['flashcards', 'decision', 'quiz'].forEach(m => {
+                document.getElementById(`practice-${m}`).classList.add('hidden');
+                const btn = document.getElementById(`pmode-${m}-btn`);
+                btn.classList.remove('bg-amber-500', 'text-white');
+                btn.classList.add('bg-stone-100', 'text-stone-700');
+            });
+
+            document.getElementById(`practice-${mode}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`pmode-${mode}-btn`);
+            activeBtn.classList.add('bg-amber-500', 'text-white');
+            activeBtn.classList.remove('bg-stone-100', 'text-stone-700');
+        }
+
+        function selectDecision(type, val, btnEl) {
+            decisionState[type] = val;
+
+            // Highlight button
+            const siblingBtns = btnEl.parentElement.querySelectorAll('.dt-btn');
+            siblingBtns.forEach(b => b.classList.remove('border-amber-500', 'bg-amber-50/80', 'ring-2', 'ring-amber-400'));
+            btnEl.classList.add('border-amber-500', 'bg-amber-50/80', 'ring-2', 'ring-amber-400');
+
+            // Enable Step 3 only if No Obligation + Past
+            const execStep = document.getElementById('dt-step-execution');
+            if (decisionState.origin === 'none' && decisionState.time === 'past') {
+                execStep.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                execStep.classList.add('opacity-50', 'pointer-events-none');
+                decisionState.action = null;
+            }
+
+            evaluateDecisionTree();
+        }
+
+        function evaluateDecisionTree() {
+            const { origin, time, action } = decisionState;
+            const resBox = document.getElementById('dt-result-box');
+            const resTitle = document.getElementById('dt-result-title');
+            const resDesc = document.getElementById('dt-result-desc');
+
+            if (!origin || !time) return;
+
+            resBox.classList.remove('hidden');
+
+            if (origin === 'internal') {
+                if (time === 'present') {
+                    resTitle.textContent = "MUST";
+                    resDesc.textContent = "Use 'must' when the obligation comes directly from the speaker's internal feelings.";
+                } else if (time === 'past') {
+                    resTitle.textContent = "HAD TO";
+                    resDesc.textContent = "Must has no past form! Switch to 'had to'.";
+                } else {
+                    resTitle.textContent = "WILL HAVE TO";
+                    resDesc.textContent = "Must has no future form! Switch to 'will have to'.";
+                }
+            } else if (origin === 'external') {
+                if (time === 'present') {
+                    resTitle.textContent = "HAVE TO / NEED TO";
+                    resDesc.textContent = "Use 'have to' or 'need to' for external laws, rules, or situations. In spoken English, 'have got to' is also popular.";
+                } else if (time === 'past') {
+                    resTitle.textContent = "HAD TO / NEEDED TO";
+                    resDesc.textContent = "Use 'had to' or 'needed to' for past external obligations.";
+                } else {
+                    resTitle.textContent = "WILL HAVE TO / WILL NEED TO";
+                    resDesc.textContent = "Use 'will have to' or 'will need to' for future obligations.";
+                }
+            } else if (origin === 'none') {
+                if (time === 'present') {
+                    resTitle.textContent = "DON'T HAVE TO / NEEDN'T";
+                    resDesc.textContent = "Suggests no obligation or necessity in the present. (Remember: mustn't means forbidden!).";
+                } else if (time === 'future') {
+                    resTitle.textContent = "WON'T HAVE TO / NOT GOING TO NEED TO";
+                    resDesc.textContent = "Expresses lack of obligation in the future.";
+                } else if (time === 'past') {
+                    if (action === 'done') {
+                        resTitle.textContent = "NEEDN'T HAVE + V3";
+                        resDesc.textContent = "The action WAS performed, but it was unnecessary (wasted effort).";
+                    } else if (action === 'not_done') {
+                        resTitle.textContent = "DIDN'T NEED TO / DIDN'T HAVE TO";
+                        resDesc.textContent = "It wasn't necessary, so the action WAS NOT performed.";
+                    } else {
+                        resTitle.textContent = "Select Step 3 (Was action performed?)";
+                        resDesc.textContent = "In the past, native speakers distinguish whether the action actually took place.";
+                    }
+                }
+            }
+        }
+
+        function renderQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-progress-text').textContent = `Question ${currentQuizIndex + 1} of ${quizQuestions.length}`;
+            document.getElementById('quiz-category').textContent = q.category;
+            document.getElementById('quiz-question').textContent = q.question;
+
+            const optsContainer = document.getElementById('quiz-options');
+            optsContainer.innerHTML = '';
+
+            const feedbackEl = document.getElementById('quiz-feedback');
+            feedbackEl.classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-opt-btn w-full p-3.5 rounded-xl border border-stone-200 text-left text-xs font-medium hover:border-amber-400 bg-white transition";
+                btn.innerHTML = `<span class="font-bold me-2 text-stone-400">${String.fromCharCode(65 + idx)}.</span> ${optText}`;
+                btn.onclick = () => selectQuizOption(idx);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function selectQuizOption(optIndex) {
+            const q = quizQuestions[currentQuizIndex];
+            const optBtns = document.querySelectorAll('.quiz-opt-btn');
+
+            // Disable further clicks
+            optBtns.forEach(b => b.onclick = null);
+
+            const feedbackEl = document.getElementById('quiz-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (optIndex === q.correct) {
+                optBtns[optIndex].classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'font-bold');
+                feedbackEl.className = "p-4 rounded-xl text-xs bg-emerald-100 text-emerald-900 border border-emerald-300";
+                feedbackEl.innerHTML = `<p class="font-bold mb-1"><i class="fa-solid fa-circle-check text-emerald-600 me-1"></i> Correct!</p>${q.explanation}`;
+                userQuizAnswers[currentQuizIndex] = true;
+            } else {
+                optBtns[optIndex].classList.add('bg-rose-50', 'border-rose-400', 'text-rose-900');
+                optBtns[q.correct].classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'font-bold');
+                feedbackEl.className = "p-4 rounded-xl text-xs bg-rose-100 text-rose-900 border border-rose-300";
+                feedbackEl.innerHTML = `<p class="font-bold mb-1"><i class="fa-solid fa-circle-xmark text-rose-600 me-1"></i> Incorrect</p>${q.explanation}`;
+                userQuizAnswers[currentQuizIndex] = false;
+            }
+
+            updateScoreHeader();
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                renderQuizQuestion();
+            } else {
+                // Quiz complete
+                const container = document.getElementById('quiz-container');
+                const correctCount = userQuizAnswers.filter(Boolean).length;
+                container.innerHTML = `
+                    <div class="text-center py-8 space-y-4">
+                        <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-2xl font-bold">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <h4 class="font-display text-2xl font-bold text-stone-800">Quiz Completed!</h4>
+                        <p class="text-sm text-stone-600">You scored <strong>${correctCount}</strong> out of <strong>${quizQuestions.length}</strong>.</p>
+                        <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl bg-amber-600 text-white font-bold text-xs hover:bg-amber-700">
+                            Restart Quiz
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            userQuizAnswers = [];
+            document.getElementById('quiz-container').innerHTML = `
+                <div class="space-y-2">
+                    <span id="quiz-category" class="px-2.5 py-1 bg-amber-100 text-amber-900 text-[11px] font-bold rounded-md uppercase">Category</span>
+                    <p id="quiz-question" class="font-display text-lg font-bold text-stone-800">Question text...</p>
+                </div>
+                <div id="quiz-options" class="space-y-3"></div>
+                <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs space-y-1"></div>
+                <div class="flex justify-end pt-2">
+                    <button id="quiz-next-btn" onclick="nextQuestion()" class="hidden px-5 py-2.5 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700">Next Question <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                </div>
+            `;
+            renderQuizQuestion();
+            updateScoreHeader();
+        }
+
+        function updateScoreHeader() {
+            const mastered = userQuizAnswers.filter(Boolean).length;
+            document.getElementById('recall-score').textContent = `${mastered} / ${quizQuestions.length} Mastered`;
+        }
+
+        window.onload = function() {
+            loadNotes();
+            renderCard();
+            renderQuizQuestion();
+        };
+    </script>
+</body>
+</html>
